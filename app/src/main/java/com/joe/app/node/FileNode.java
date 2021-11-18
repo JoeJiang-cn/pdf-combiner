@@ -14,12 +14,10 @@ import java.util.List;
 public abstract class FileNode {
     protected String filename;
     protected int pageNum; // 合并后的起始页
-    protected int row; // 表示位于目录的第几行
 
-    public FileNode(String filename, int pageNum, int row) {
+    public FileNode(String filename, int pageNum) {
         this.filename = filename;
         this.pageNum = pageNum;
-        this.row = row;
     }
 
     public FileNode add(FileNode node) {

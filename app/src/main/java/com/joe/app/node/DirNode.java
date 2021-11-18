@@ -25,8 +25,8 @@ import java.util.List;
 public class DirNode extends FileNode{
     private List<FileNode> children = new ArrayList<>();
 
-    public DirNode(String filename, int pageNum, int row) {
-        super(filename, pageNum, row);
+    public DirNode(String filename, int pageNum) {
+        super(filename, pageNum);
     }
 
     @Override

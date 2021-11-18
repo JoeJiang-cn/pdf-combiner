@@ -47,7 +47,7 @@ public class PdfOperator {
 
     public void startTraverse(String path) {
         File file = new File(path);
-        root = new DirNode(file.getName(), 1, rows); // 需要从1开始
+        root = new DirNode(file.getName(), 1); // 需要从1开始
         try {
             traverseFolder(file, root);
         } catch (Exception e) {
@@ -71,12 +71,14 @@ public class PdfOperator {
         }
         for (File subFile : files) {
             if (subFile.isDirectory()) {
+                rows++;
                 FileNode child = node.add(new DirNode(subFile.getName(),
-                        pdf.getNumberOfPages() + 1, ++rows));
+                        pdf.getNumberOfPages() + 1));
                 // 遍历子节点
                 traverseFolder(subFile, child);
             } else {
                 if (isPDF(subFile)) {
+                    rows++;
                     // merge
                     PdfMerger merger = new PdfMerger(pdf);
                     // Add pages from the first document
@@ -86,7 +88,7 @@ public class PdfOperator {
                     String title = getFirstLine(pdfToMerge);
                     pdfToMerge.close();
                     node.add(new PdfNode(title,
-                            pdf.getNumberOfPages() + 1 - numOfPages, ++rows));
+                            pdf.getNumberOfPages() + 1 - numOfPages));
                 }
             }
         }

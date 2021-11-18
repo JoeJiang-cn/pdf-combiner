@@ -19,8 +19,8 @@ import com.itextpdf.layout.property.TabAlignment;
  * 2021/6/22 21:42
  */
 public class PdfNode extends FileNode{
-    public PdfNode(String filename, int pageNum, int row) {
-        super(filename, pageNum, row);
+    public PdfNode(String filename, int pageNum) {
+        super(filename, pageNum);
     }
 
     @Override
