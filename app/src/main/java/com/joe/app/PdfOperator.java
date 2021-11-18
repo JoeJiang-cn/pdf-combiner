@@ -25,7 +25,7 @@ import java.util.Scanner;
  * 2021/6/22 13:58
  */
 public class PdfOperator {
-    public static final float tocYCoordinate = 770;
+    public static final float TOC_Y_COORDINATE = 770;
     private PdfDocument pdf;
     private FileNode root;
     private int rows;
@@ -47,7 +47,7 @@ public class PdfOperator {
 
     public void startTraverse(String path) {
         File file = new File(path);
-        root = new DirNode(file.getName(), path, 1, rows); // 需要从1开始
+        root = new DirNode(file.getName(), 1, rows); // 需要从1开始
         try {
             traverseFolder(file, root);
         } catch (Exception e) {
@@ -62,34 +62,33 @@ public class PdfOperator {
      * @throws Exception
      */
     private void traverseFolder(File file, FileNode node) throws Exception {
-        if (file.exists() || !file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files == null) {
-                return;
-            }
-            for (File subFile : files) {
-                if (subFile.isDirectory()) {
-                    FileNode child = node.add(new DirNode(subFile.getName(), subFile.getAbsolutePath(),
-                            pdf.getNumberOfPages() + 1, ++rows));
-                    // 遍历子节点
-                    traverseFolder(subFile, child);
-                } else {
-                    if (isPDF(subFile)) {
-                        // merge
-                        PdfMerger merger = new PdfMerger(pdf);
-                        // Add pages from the first document
-                        PdfDocument pdfToMerge = new PdfDocument(new PdfReader(subFile));
-                        int numOfPages = pdfToMerge.getNumberOfPages();
-                        merger.merge(pdfToMerge, 1, numOfPages);
-                        String title = getFirstLine(pdfToMerge);
-                        pdfToMerge.close();
-                        node.add(new PdfNode(title, subFile.getAbsolutePath(),
-                                pdf.getNumberOfPages() + 1 - numOfPages, ++rows));
-                    }
+        if (!file.exists() || !file.isDirectory()) {
+            throw new Exception("请输入正确的文件夹地址！");
+        }
+        File[] files = file.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File subFile : files) {
+            if (subFile.isDirectory()) {
+                FileNode child = node.add(new DirNode(subFile.getName(),
+                        pdf.getNumberOfPages() + 1, ++rows));
+                // 遍历子节点
+                traverseFolder(subFile, child);
+            } else {
+                if (isPDF(subFile)) {
+                    // merge
+                    PdfMerger merger = new PdfMerger(pdf);
+                    // Add pages from the first document
+                    PdfDocument pdfToMerge = new PdfDocument(new PdfReader(subFile));
+                    int numOfPages = pdfToMerge.getNumberOfPages();
+                    merger.merge(pdfToMerge, 1, numOfPages);
+                    String title = getFirstLine(pdfToMerge);
+                    pdfToMerge.close();
+                    node.add(new PdfNode(title,
+                            pdf.getNumberOfPages() + 1 - numOfPages, ++rows));
                 }
             }
-        } else {
-            throw new Exception("请输入正确的文件夹地址！");
         }
     }
 
@@ -149,19 +148,21 @@ public class PdfOperator {
                 .setFontFamily(StandardFonts.HELVETICA_BOLD)
                 .setFontSize(14)
                 .setTextAlignment(TextAlignment.CENTER);
-        document.add(p.setFixedPosition(tocXCoordinate, tocYCoordinate, tocWidth)
+        // 把段落添加到PDF中
+        document.add(p.setFixedPosition(tocXCoordinate, TOC_Y_COORDINATE, tocWidth)
                 .setMargin(0)
                 .setMultipliedLeading(1));
 
         int tabPosition = 500;
 
         // <页数，Y坐标>
-        TwoTuple<Integer, Float> pageAndY = new TwoTuple<>(1, tocYCoordinate);
+        TwoTuple<Integer, Float> pageAndY = new TwoTuple<>(1, TOC_Y_COORDINATE);
 
-        // 遍历+递归生成目录树
+        // 递归生成目录树
         for (FileNode node : root.getChildren()) {
             if (pageAndY.getSecond() <= 110) {
-                pageAndY = node.addToC(document, totalTocPage, pageAndY.getFirst() + 1, tocXCoordinate, tocYCoordinate, tocWidth, tabPosition);
+                // 换页
+                pageAndY = node.addToC(document, totalTocPage, pageAndY.getFirst() + 1, tocXCoordinate, TOC_Y_COORDINATE, tocWidth, tabPosition);
             } else {
                 pageAndY = node.addToC(document, totalTocPage, pageAndY.getFirst(), tocXCoordinate, pageAndY.getSecond() - 20, tocWidth, tabPosition);
             }

@@ -13,26 +13,14 @@ import com.itextpdf.layout.element.Tab;
 import com.itextpdf.layout.element.TabStop;
 import com.itextpdf.layout.property.TabAlignment;
 
-import java.util.List;
-
 /**
  * @author Joe
  * TODO description
  * 2021/6/22 21:42
  */
 public class PdfNode extends FileNode{
-    public PdfNode(String filename, String path, int pageNum, int row) {
-        super(filename, path, pageNum, row);
-    }
-
-    @Override
-    public FileNode add(FileNode node) {
-        return null;
-    }
-
-    @Override
-    public List<FileNode> getChildren() {
-        return null;
+    public PdfNode(String filename, int pageNum, int row) {
+        super(filename, pageNum, row);
     }
 
     @Override

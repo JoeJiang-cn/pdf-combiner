@@ -13,20 +13,22 @@ import java.util.List;
  */
 public abstract class FileNode {
     protected String filename;
-    protected String path;
     protected int pageNum; // 合并后的起始页
     protected int row; // 表示位于目录的第几行
 
-    public FileNode(String filename, String path, int pageNum, int row) {
+    public FileNode(String filename, int pageNum, int row) {
         this.filename = filename;
-        this.path = path;
         this.pageNum = pageNum;
         this.row = row;
     }
 
-    public abstract FileNode add(FileNode node);
+    public FileNode add(FileNode node) {
+        throw new UnsupportedOperationException();
+    }
 
-    public abstract List<FileNode> getChildren();
+    public List<FileNode> getChildren() {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract void print();
 
@@ -39,11 +41,11 @@ public abstract class FileNode {
 
     /**
      * 增加目录
-     * @param document
+     * @param document 文档
      * @param page 第几页
-     * @param x
-     * @param y
-     * @param width
+     * @param x 目录条目起始的横坐标
+     * @param y 目录条目起始的纵坐标
+     * @param width 目录条目宽度
      * @param position
      * @return
      */

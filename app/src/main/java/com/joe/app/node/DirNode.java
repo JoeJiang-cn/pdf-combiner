@@ -25,8 +25,8 @@ import java.util.List;
 public class DirNode extends FileNode{
     private List<FileNode> children = new ArrayList<>();
 
-    public DirNode(String filename, String path, int pageNum, int row) {
-        super(filename, path, pageNum, row);
+    public DirNode(String filename, int pageNum, int row) {
+        super(filename, pageNum, row);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class DirNode extends FileNode{
         for (FileNode node : children) {
             if (pageAndY.getSecond() <= 110) {
                 // 换页
-                pageAndY = node.addToC(document, totalTocPage, pageAndY.getFirst() + 1, x + 20, PdfOperator.tocYCoordinate, width, position - 20);
+                pageAndY = node.addToC(document, totalTocPage, pageAndY.getFirst() + 1, x + 20, PdfOperator.TOC_Y_COORDINATE, width, position - 20);
             } else {
                 pageAndY = node.addToC(document, totalTocPage, pageAndY.getFirst(), x + 20, pageAndY.getSecond() - 20, width, position - 20);
             }
